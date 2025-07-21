@@ -358,7 +358,7 @@ void movement_play_signal(void) {
 }
 
 void movement_play_alarm(void) {
-    movement_play_alarm_beeps(5, BUZZER_NOTE_C8);
+    movement_play_alarm_beeps(10, BUZZER_NOTE_C8);
 }
 
 void movement_play_alarm_beeps(uint8_t rounds, watch_buzzer_note_t alarm_note) {
@@ -514,10 +514,14 @@ void movement_set_alarm_enabled(bool value) {
 bool movement_enable_tap_detection_if_available(void) {
     if (movement_state.has_lis2dw) {
         // configure tap duration threshold and enable Z axis
-        lis2dw_configure_tap_threshold(0, 0, 12, LIS2DW_REG_TAP_THS_Z_Z_AXIS_ENABLE);
-        lis2dw_configure_tap_duration(10, 2, 2);
+        //lis2dw_configure_tap_threshold(0, 0, 12, LIS2DW_REG_TAP_THS_Z_Z_AXIS_ENABLE);
+        lis2dw_configure_tap_threshold(0, 0, 6, LIS2DW_REG_TAP_THS_Z_Z_AXIS_ENABLE);
+        // CWret played around with these to enable fast two tap 
+        //lis2dw_configure_tap_duration(10, 2, 2);
+        lis2dw_configure_tap_duration(8, 3, 0);
 
         // ramp data rate up to 400 Hz and high performance mode
+        // CWret is this really entirely needed? Can probably save a bit here by not going going somewhat low power
         lis2dw_set_low_noise_mode(true);
         lis2dw_set_data_rate(LIS2DW_DATA_RATE_HP_400_HZ);
         lis2dw_set_mode(LIS2DW_MODE_HIGH_PERFORMANCE);
@@ -525,8 +529,10 @@ bool movement_enable_tap_detection_if_available(void) {
         // Settling time (1 sample duration, i.e. 1/400Hz)
         delay_ms(3);
 
-        // enable tap detection on INT1/A3.
-        lis2dw_configure_int1(LIS2DW_CTRL4_INT1_SINGLE_TAP | LIS2DW_CTRL4_INT1_6D);
+        // enable tap detection on INT1/A3, and try double tap detection too
+        // C Wret, could probably set LIS2DW_CTRL4_INT1_DOUBLE_TAP here too, which would be nice, maybe even free fall also
+        lis2dw_configure_int1(LIS2DW_CTRL4_INT1_DOUBLE_TAP | LIS2DW_CTRL4_INT1_SINGLE_TAP | LIS2DW_CTRL4_INT1_6D);
+
 
         return true;
     }
@@ -1065,11 +1071,9 @@ void cb_accelerometer_event(void) {
 
     if (int_src & LIS2DW_REG_ALL_INT_SRC_DOUBLE_TAP) {
         event.event_type = EVENT_DOUBLE_TAP;
-        printf("Double tap!\n");
     }
     if (int_src & LIS2DW_REG_ALL_INT_SRC_SINGLE_TAP) {
         event.event_type = EVENT_SINGLE_TAP;
-        printf("Single tap!\n");
     }
 }
 
