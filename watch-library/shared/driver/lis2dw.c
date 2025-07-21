@@ -305,7 +305,8 @@ void lis2dw_clear_fifo(void) {
 void lis2dw_enable_sleep(void) {
 #ifdef I2C_SERCOM
     uint8_t configuration = watch_i2c_read8(LIS2DW_ADDRESS, LIS2DW_REG_WAKE_UP_THS);
-    watch_i2c_write8(LIS2DW_ADDRESS, LIS2DW_REG_WAKE_UP_THS, configuration | LIS2DW_WAKE_UP_THS_VAL_SLEEP_ON);
+    watch_i2c_write8(LIS2DW_ADDRESS, LIS2DW_REG_WAKE_UP_THS, configuration | LIS2DW_WAKE_UP_THS_ENABLE_DOUBLE_TAP | LIS2DW_WAKE_UP_THS_VAL_SLEEP_ON);
+    // CWret try enabling double tap here
 #endif
 }
 
@@ -357,6 +358,7 @@ void lis2dw_configure_tap_threshold(uint8_t threshold_x, uint8_t threshold_y, ui
     // if (axes_to_enable & LIS2DW_REG_TAP_THS_Z_Y_AXIS_ENABLE);   // Y axis tap not implemented
     // tap enable bitmask is the high bits of LIS2DW_REG_TAP_THS_Z
     configuration = axes_to_enable & 0b00100000; // NOTE: should be 0b11100000 to allow use of all three axes, but we're not using X or Y.
+
     if (axes_to_enable & LIS2DW_REG_TAP_THS_Z_Z_AXIS_ENABLE) {
         // mask out high bits if set
         configuration |= (threshold_z & 0b00011111);
@@ -370,6 +372,9 @@ void lis2dw_configure_tap_threshold(uint8_t threshold_x, uint8_t threshold_y, ui
 #endif
 }
 
+// Latency 00 is 16/ODR, 1LSB=32/ODR
+// Quiet 00 is 2/ODR, 1LSB=4/ODR
+// Shock 00 is 4/ODR, 1 LSB=8/ODR
 void lis2dw_configure_tap_duration(uint8_t latency, uint8_t quiet, uint8_t shock) {
 #ifdef I2C_SERCOM
     uint8_t configuration = (latency << 4) | ((quiet & 0b11) << 2) | (shock & 0b11);
