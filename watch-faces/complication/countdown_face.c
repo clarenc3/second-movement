@@ -31,7 +31,7 @@
 #include "watch_utility.h"
 
 #define CD_SELECTIONS 3
-#define DEFAULT_MINUTES 3
+#define DEFAULT_MINUTES 5
 #define TAP_DETECTION_SECONDS 5
 
 static bool quick_ticks_running;
@@ -221,6 +221,7 @@ void countdown_face_activate(void *context) {
     if (state->mode != cd_running && movement_enable_tap_detection_if_available()) {
         state->tap_detection_ticks = TAP_DETECTION_SECONDS;
         state->has_tapped_once = false;
+        //state->has_tapped_twice = false;
     }
 }
 
@@ -383,6 +384,23 @@ bool countdown_face_loop(movement_event_t event, void *context) {
                 // on subsequent taps, increment the countdown by 1 minute, up to 59 taps
                 state->minutes = state->minutes < 59 ? state->minutes + 1 : state->minutes;
             }
+            // reset the tap detection timer
+            state->tap_detection_ticks = TAP_DETECTION_SECONDS;
+            draw(state, event.subsecond);
+            break;
+        case EVENT_DOUBLE_TAP:
+            /*
+            if (state->has_tapped_twice == false) {
+                // on first tap, set the countdown to 1 minute
+                state->has_tapped_twice = true;
+                state->hours = 0;
+                state->minutes = 1;
+                state->seconds = 0;
+            } else {
+            */
+                // on subsequent taps, increment the countdown by 1 minute, up to 59 taps
+            state->minutes = state->minutes > 0 ? state->minutes - 2 : 59;
+            state->seconds = 0;
             // reset the tap detection timer
             state->tap_detection_ticks = TAP_DETECTION_SECONDS;
             draw(state, event.subsecond);
