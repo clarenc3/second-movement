@@ -130,8 +130,8 @@ typedef enum {
     EVENT_ALARM_LONG_UP,        // The alarm button was held for over half a second, and released.
 
     EVENT_ACCELEROMETER_WAKE,   // The accelerometer has detected motion and woken up.
-    EVENT_SINGLE_TAP,           // Accelerometer detected a single tap. This event is not yet implemented.
-    EVENT_DOUBLE_TAP,           // Accelerometer detected a double tap. This event is not yet implemented.
+    EVENT_SINGLE_TAP,           // Accelerometer detected a single tap
+    EVENT_DOUBLE_TAP,           // Accelerometer detected a double tap. This event is under construction
 } movement_event_type_t;
 
 typedef struct {
