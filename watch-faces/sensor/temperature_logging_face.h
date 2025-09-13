@@ -57,7 +57,8 @@
 #include "movement.h"
 #include "watch.h"
 
-#define TEMPERATURE_LOGGING_NUM_DATA_POINTS (36)
+// Save for 99h (4.125 days)
+#define TEMPERATURE_LOGGING_NUM_DATA_POINTS (99)
 
 typedef struct {
     watch_date_time_t timestamp;
