@@ -305,7 +305,7 @@ void lis2dw_clear_fifo(void) {
 void lis2dw_enable_sleep(void) {
 #ifdef I2C_SERCOM
     uint8_t configuration = watch_i2c_read8(LIS2DW_ADDRESS, LIS2DW_REG_WAKE_UP_THS);
-    watch_i2c_write8(LIS2DW_ADDRESS, LIS2DW_REG_WAKE_UP_THS, configuration | LIS2DW_WAKE_UP_THS_ENABLE_DOUBLE_TAP | LIS2DW_WAKE_UP_THS_VAL_SLEEP_ON);
+    watch_i2c_write8(LIS2DW_ADDRESS, LIS2DW_REG_WAKE_UP_THS, configuration | LIS2DW_WAKE_UP_THS_VAL_SLEEP_ON);
     // CWret try enabling double tap here
 #endif
 }
