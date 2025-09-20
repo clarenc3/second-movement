@@ -62,7 +62,7 @@
 #define ALARM_DAY_ONE_TIME 8
 #define ALARM_DAY_WORKDAY 9
 #define ALARM_DAY_WEEKEND 10
-#define ALARM_MAX_BEEP_ROUNDS 11 // maximum number of beeping rounds for an alarm slot (including short and long alarms)
+#define ALARM_MAX_BEEP_ROUNDS 100 // maximum number of beeping rounds for an alarm slot (including short and long alarms)
 #define ALARM_SETTING_STATES 6
 
 typedef struct {
